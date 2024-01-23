@@ -32,7 +32,9 @@ export default function MainSection({ score, setScore, setGameLost }) {
     getRandomPokemon(30).then((value) => setPokemonArray(value));
   }, []);
 
-  return <div className="card-cont">{cardArray}</div>;
+    if (pokemonArray.length > 1)
+      return <div className="card-cont">{cardArray}</div>;
+    else return <div>Loading...</div>
 }
 
 async function getRandomPokemon(size) {
