@@ -18,7 +18,7 @@ export default function MainSection({ score, setScore, setGameLost }) {
   const cardArray = [];
 
   if (pokemonArray.length > 1)
-    for (let i = 0; i < 20; i++)
+    for (let i = 0; i < 30; i++)
       cardArray.push(
         <Card
           name={pokemonArray[i].name}
@@ -29,7 +29,7 @@ export default function MainSection({ score, setScore, setGameLost }) {
       );
 
   useEffect(() => {
-    getRandomPokemon(40).then((value) => setPokemonArray(value));
+    getRandomPokemon(30).then((value) => setPokemonArray(value));
   }, []);
 
   return <div className="card-cont">{cardArray}</div>;
@@ -37,8 +37,10 @@ export default function MainSection({ score, setScore, setGameLost }) {
 
 async function getRandomPokemon(size) {
   let pokeArray = [];
+  let randomNumberArray = []
   for (let i = 0; i < size; i++) {
-    const randomNumber = Math.floor(Math.random() * 150 + 1);
+    let randomNumber = Math.floor(Math.random() * 400 + 1);
+    while(randomNumberArray.includes(randomNumber)) randomNumber = Math.floor(Math.random() * 400 + 1);
     const response = await fetch(
       `https://pokeapi.co/api/v2/pokemon/${randomNumber}`,
       {
