@@ -32,17 +32,23 @@ export default function MainSection({ score, setScore, setGameLost }) {
     getRandomPokemon(30).then((value) => setPokemonArray(value));
   }, []);
 
-    if (pokemonArray.length > 1)
-      return <div className="card-cont">{cardArray}</div>;
-    else return <div>Loading...</div>
+  if (pokemonArray.length > 1)
+    return <div className="card-cont">{cardArray}</div>;
+  else return <div>Loading...</div>;
 }
 
 async function getRandomPokemon(size) {
   let pokeArray = [];
-  let randomNumberArray = []
+  let randomNumberArray = [];
+  
   for (let i = 0; i < size; i++) {
     let randomNumber = Math.floor(Math.random() * 400 + 1);
-    while(randomNumberArray.includes(randomNumber)) randomNumber = Math.floor(Math.random() * 400 + 1);
+
+    while (randomNumberArray.includes(randomNumber))
+      randomNumber = Math.floor(Math.random() * 400 + 1);
+
+    randomNumberArray.push(randomNumber);
+
     const response = await fetch(
       `https://pokeapi.co/api/v2/pokemon/${randomNumber}`,
       {
