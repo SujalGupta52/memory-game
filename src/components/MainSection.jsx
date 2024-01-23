@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
 import Card from "./Cards";
 
-export default function MainSection({score, setScore}) {
-
+export default function MainSection({ score, setScore, setGameLost }) {
   function onCardClick(e) {
     setPokemonArray(shuffle(pokemonArray));
-    if(lastItemID === +e.currentTarget.id) setScore(score + 1)
-    setLastItemID(+e.currentTarget.id);
+    if (!alreadyClickedId.includes(+e.currentTarget.id)) {
+      setScore(score + 1);
+      setAlreadyClickedId(alreadyClickedId.concat(+e.currentTarget.id));
+    } else {
+      setAlreadyClickedId([]);
+      setGameLost(true);
+    }
   }
 
   const [pokemonArray, setPokemonArray] = useState([]);
-  const [lastItemID, setLastItemID] = useState(0);
+  const [alreadyClickedId, setAlreadyClickedId] = useState([]);
   const cardArray = [];
 
   if (pokemonArray.length > 1)
@@ -18,9 +22,9 @@ export default function MainSection({score, setScore}) {
       cardArray.push(
         <Card
           name={pokemonArray[i].name}
-          img = {pokemonArray[i].img}
-          id= {pokemonArray[i].id}
-          clickHandler = {onCardClick}
+          img={pokemonArray[i].img}
+          id={pokemonArray[i].id}
+          clickHandler={onCardClick}
         />
       );
 
@@ -30,8 +34,6 @@ export default function MainSection({score, setScore}) {
 
   return <>{cardArray}</>;
 }
-
-
 
 async function getRandomPokemon(size) {
   let pokeArray = [];
