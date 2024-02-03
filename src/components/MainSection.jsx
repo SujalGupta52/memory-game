@@ -29,7 +29,7 @@ export default function MainSection({ score, setScore, setGameLost }) {
       );
 
   useEffect(() => {
-    getRandomPokemon(30).then((value) => setPokemonArray(value));
+    getRandomPokemon(30, setPokemonArray);
   }, []);
 
   if (pokemonArray.length > 1)
@@ -37,10 +37,10 @@ export default function MainSection({ score, setScore, setGameLost }) {
   else return <div>Loading...</div>;
 }
 
-async function getRandomPokemon(size) {
-  let pokeArray = [];
+async function getRandomPokemon(size, setData) {
   let randomNumberArray = [];
-  
+  let promiseArray = [];
+
   for (let i = 0; i < size; i++) {
     let randomNumber = Math.floor(Math.random() * 400 + 1);
 
@@ -49,20 +49,26 @@ async function getRandomPokemon(size) {
 
     randomNumberArray.push(randomNumber);
 
-    const response = await fetch(
-      `https://pokeapi.co/api/v2/pokemon/${randomNumber}`,
-      {
+    promiseArray.push(
+      fetch(`https://pokeapi.co/api/v2/pokemon/${randomNumber}`, {
         mode: "cors",
-      }
+      })
     );
-    const pokemon = await response.json();
-    pokeArray.push({
-      name: pokemon.name,
-      id: pokemon.id,
-      img: pokemon.sprites.front_default,
-    });
   }
-  return pokeArray;
+  Promise.all(promiseArray).then((responseArray) => {
+    Promise.all(responseArray.map((response) => response.json())).then(
+      (pokemonArray) =>
+        setData(
+          pokemonArray.map((pokemon) => {
+            return {
+              name: pokemon.name,
+              id: pokemon.id,
+              img: pokemon.sprites.front_default,
+            };
+          })
+        )
+    );
+  });
 }
 
 function shuffle(inputArray) {
